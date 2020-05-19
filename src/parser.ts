@@ -184,7 +184,6 @@ export class Parser {
     }
   }
 
-
   error(message: string, line: number, column: number) {
     throw new Error(`'${message}' at ${line}:${column}.`);
   }

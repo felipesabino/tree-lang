@@ -1,10 +1,10 @@
 import { InsectEnclosing } from './parser';
 
 export interface InputSource {
-  fetch(): any;
+  fetch(): Promise<any>;
 }
 
-type CharMap = { [index: string]: () => void };
+type CharMap = { [index: string]: () => Promise<void> };
 
 export class Interpreter {
 
@@ -33,21 +33,21 @@ export class Interpreter {
   buildCharMap(): CharMap {
     let charMap: CharMap = {
       // insects
-      '>': () =>
+      '>': async () =>
         this.insect((a, b) => a > b),
-      '<': () =>
+      '<': async() =>
         this.insect((a, b) => a < b),
-      '=': () =>
+      '=': async() =>
         this.insect((a, b) => a == b),
-      '!=': () =>
+      '!=': async() =>
         this.insect((a, b) => a != b),
 
       // leaves
-      '+': () => this.binary((a, b) => a + b),
-      '-': () => this.binary((a, b) => a - b),
-      '*': () => this.binary((a, b) => a * b),
-      '%': () => this.binary((a, b) => a / b),
-      '@': () => {
+      '+': async () => this.binary((a, b) => a + b),
+      '-': async () => this.binary((a, b) => a - b),
+      '*': async () => this.binary((a, b) => a * b),
+      '%': async () => this.binary((a, b) => a / b),
+      '@': async () => {
         // Pops the top stack element, records its value. Moves the stack element in the position of that value to the top of the stack.
         if (this.stack.length > 0) {
           let index = +this.pop();
@@ -63,40 +63,40 @@ export class Interpreter {
           // error?
         }
       },
-      '#': () => this.pop(),
-      '~': () => {
+      '#': async () => this.pop(),
+      '~': async () => {
         if (this.stack.length > 0) {
           let value = this.stack[this.stack.length - 1]
           this.push(value);
         }
       },
-      '^': () => {
+      '^': async () => {
         if (this.stack.length > 0) {
           this.output.push(this.pop());
         }
       },
-      ':': () => {
-        this.push(this.input.fetch())
+      ':': async () => {
+        this.push(await this.input.fetch())
       },
     };
-    charMap[InsectEnclosing.Open] = () => {};
-    charMap[InsectEnclosing.Close] = () => {};
+    charMap[InsectEnclosing.Open] = async () => {};
+    charMap[InsectEnclosing.Close] = async () => {};
 
     return charMap;
   }
 
-  interpret(): any[] {
+  async interpret(): Promise<any[]> {
 
     while(!this.isAtEnd()) {
-      this.parse();
+      await this.parse();
     }
     return this.output;
   }
 
-  parse() {
+  async parse() {
     let char = this.advance();
     if (this.charMap[char]) {
-      this.charMap[char]();
+      await this.charMap[char]();
     } else {
       this.push(char);
     }
@@ -147,14 +147,11 @@ export class Interpreter {
     let b = this.pop();
     let a = this.pop();
 
-    console.log(`comparing ${a} op ${b}`);
-
     if (!compareFunc(a, b)) {
       // skip all leaves and branches nested on this insect
       let enclosingCount = 0;
       while (enclosingCount >= 0 || this.isAtEnd()) { // sugar as nesting insects is currently not supported by parser/syntax
         let char = this.peekNext();
-        console.log(`insect loop;'${char}';${this.stack};${this.output}`);
         if (char === InsectEnclosing.Open) {
           enclosingCount++;
         } else if (char === InsectEnclosing.Close) {

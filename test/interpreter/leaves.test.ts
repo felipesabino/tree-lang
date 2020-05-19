@@ -1,19 +1,19 @@
-import { Interpreter } from '../../src/interpreter';
+import { Interpreter, InputSource } from '../../src/interpreter';
 
 describe('Leaves', () => {
 
-  let inputSource = {
-    fetch: () => { },
+  let inputSource: InputSource = {
+    fetch: async () => { },
   }
 
   describe('#', () => {
 
-    it('# pops and discard', () => {
+    it('# pops and discard', async () => {
 
       let parsed = [9, 15, '#', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([9]);
     });
@@ -22,22 +22,22 @@ describe('Leaves', () => {
 
   describe('~', () => {
 
-    it('~ duplicates top element from stack', () => {
+    it('~ duplicates top element from stack', async () => {
 
       let parsed = [9, 15, '~', '^', '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([15, 15, 9]);
     });
 
-    it('~ does nothing on an empty stack', () => {
+    it('~ does nothing on an empty stack', async () => {
 
       let parsed = ['~', 15, '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([15]);
     });
@@ -47,17 +47,15 @@ describe('Leaves', () => {
   describe(':', () => {
 
     beforeEach(() => {
-      inputSource.fetch = () => {
-        return 10;
-      }
+      inputSource.fetch = async () => 10;
     });
 
-    it('v gets from innput', () => {
+    it('v gets from innput', async () => {
 
       let parsed = [9, 15, ':', '^', '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([10, 15, 9]);
     });
@@ -66,12 +64,12 @@ describe('Leaves', () => {
 
   describe('^', () => {
 
-    it('^ does nothing onn an empty stack', () => {
+    it('^ does nothing onn an empty stack', async () => {
 
       let parsed = ['^', '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([]);
     });
@@ -80,40 +78,40 @@ describe('Leaves', () => {
 
   describe('@', () => {
 
-    it('@ replaces top of stack with element', () => {
+    it('@ replaces top of stack with element', async () => {
 
       let parsed = [9, 8, 0, '@', '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([9, 8]);
     });
 
-    it('@ does nothing onn an empty stack', () => {
+    it('@ does nothing onn an empty stack', async () => {
 
       let parsed = ['@', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([]);
     });
 
-    it('@ does nothing onn an invalid index stack', () => {
+    it('@ does nothing onn an invalid index stack', async () => {
       let parsed = [2, '@', '^', '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([]);
     });
 
-    it('@ can replace itself when stack is empty', () => {
+    it('@ can replace itself when stack is empty', async () => {
       let parsed = [1, '#', 0, '@', '^', '^', '^'];
 
       let interpreter = new Interpreter(parsed, inputSource);
-      let result = interpreter.interpret();
+      let result = await interpreter.interpret();
 
       expect(result).toMatchObject([0]);
     });
