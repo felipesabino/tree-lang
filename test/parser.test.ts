@@ -1,6 +1,6 @@
 import { Parser, InsectEnclosing } from '../src/parser';
 
-describe('Structure', () => {
+describe('Parser', () => {
 
   describe('branches', () => {
 

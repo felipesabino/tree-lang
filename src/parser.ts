@@ -167,6 +167,7 @@ export class Parser {
       if (shouldGoNext) { shouldGoNext = this.peekAndWalk(line - 1, column + 1); } //  /
       if (shouldGoNext) { shouldGoNext = this.peekAndWalk(line - 1, column); } //      |
     } else if (char == '\\') {
+      // peek up, if / then prioritize
       if (shouldGoNext) { shouldGoNext = this.peekAndWalk(line - 1, column - 1); }
       if (shouldGoNext) { shouldGoNext = this.peekAndWalk(line - 1, column); }
     } else if (char == '/') {
@@ -176,6 +177,13 @@ export class Parser {
       this.push(line, column);
     }
   }
+
+  peek(line: number, column: number) {
+    if (this.lines[line] && this.lines[line][column]) {
+
+    }
+  }
+
 
   error(message: string, line: number, column: number) {
     throw new Error(`'${message}' at ${line}:${column}.`);

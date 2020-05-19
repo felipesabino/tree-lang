@@ -1,7 +1,7 @@
 import { Tree } from '../src/tree-lang'
 import { readFileSync,  } from 'fs'
 
-describe('Strings', () => {
+describe('Hello World', () => {
 
   let inputSource = {
     fetch: () => {},
@@ -9,11 +9,11 @@ describe('Strings', () => {
 
   it('can strings in a single line', async () => {
     const source = readFileSync(`${__dirname}/fixtures/hello-world.fixture`, 'utf8');
-    let scanner = new Tree(source, inputSource);
+    let tree = new Tree();
 
-    let result = scanner.evaluate();
+    let result = tree.run(source);
 
-    expect(result.join('')).toMatchObject('Hello World');
+    expect(result.map(s => typeof(s) == 'number' ? String.fromCharCode(s) : s ).join('')).toEqual('Hello, World!');
   });
 
 })
