@@ -109,9 +109,9 @@ Receives two characters as input and outputs the greater of the two inputs:
      \|
       |  ~
     : | /
-     \|/
-   :  |
-    \ | ~
+     \|/  ~
+   :  |  /
+    \ | /
      \|/
       |
 ```
