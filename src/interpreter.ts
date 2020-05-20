@@ -76,7 +76,9 @@ export class Interpreter {
         }
       },
       ':': async () => {
-        this.push(await this.input.fetch())
+        let value = await this.input.fetch();
+        console.log(`v: ${value}`);
+        this.push(value)
       },
     };
     charMap[InsectEnclosing.Open] = async () => {};
