@@ -63,7 +63,7 @@ Would push 321 to the stack, check the parser tests for more examples.
 
 Each valid tree program must stem from a single, main, vertical branch ( `|` ) on the last line. From then on, it is up to the programmer to place further branches stemming from the main branch or from other branches. The order that branches are traced is as follows:
 
-The program starts at the main branch and moves upwards. It then follows the lowest branch it finds off of the main branch. It then follows that branch, choosing always the left-most possible branch first. Finally, when the lowest possible branches have been explored, it returns the the branch from which the current branch stems, and explores the next right-most branches that have not been followed yet.
+The program starts at the main branch and moves upwards. It then follows the lowest branch it finds off of the main branch. It then follows that branch, choosing always the left-most possible branch first ([#1](https://github.com/felipesabino/tree-lang/issues/1)). Finally, when the left-most possible branches have been explored, it returns the the branch from which the current branch stems, and explores the next right-most branches that have not been followed yet.
 
 Leaves may be placed only at the end of branches.
 
@@ -120,4 +120,5 @@ Receives two characters as input and outputs the greater of the two inputs:
 
 - `:` used instead of `v` for input
 - Direction precedence of branches
-- Direction on how nodes are read, this implementation reads left to right instead of lowest to highest (TODO)
+- Direction on how nodes are read, this implementation reads left to right instead of lowest to highest, it is still unclear how the originrl design was intended to behave (see [#1](https://github.com/felipesabino/tree-lang/issues/1))
+- Root branch neeeds to be a single `|` in the last line. Original design mentions that but examples did not follow this rule
